@@ -34,8 +34,10 @@ $access_token = $response->token_type.' '.$response->access_token;
 
 ///Get Opportunities
 $curl = curl_init();
+$date = date('Y-m-d',strtotime('-1 day'));
+
 curl_setopt_array($curl, array(
-  CURLOPT_URL => 'https://service3.ultipro.ca/talent/recruiting/v2/ARC5000ARRS/api/opportunities',
+  CURLOPT_URL => 'https://service3.ultipro.ca/talent/recruiting/v2/ARC5000ARRS/api/opportunities?updated_after='.$date,
   CURLOPT_RETURNTRANSFER => true,
   CURLOPT_ENCODING => '',
   CURLOPT_MAXREDIRS => 10,
@@ -50,10 +52,18 @@ curl_setopt_array($curl, array(
 
 $response = curl_exec($curl);
 curl_close($curl);
+// $response = json_decode($response);
+// // echo '<pre>';
+// // print_r($response);
+// // echo '</pre>';
+// // die;
+// $count = count($response);
+// echo '<pre>';
+// print_r($count);
+// echo '</pre>';
+// die;
 $result = str_replace("\\", "\\\\", $response);
-echo '<pre>';
-print_r($result);
-echo '</pre>';
+
 die;
  
 

@@ -97,24 +97,31 @@
                let url = window.location.href;
                if (window.location.href.indexOf("news-releases") > -1) {
                    if (window.location.href.indexOf("date") < 1) {
-                       $('#2022').addClass('year-active');
+                       //    $('#2022').addClass('year-active');
+                       var element = document.getElementById('2022');
+                       element.classList.add("year-active");
                    } else {
                        let year = `<?php echo $_GET['date'] ?>`;
-                       $('#' + year).addClass('year-active');
+                       //    $('#' + year).addClass('year-active');
+                       var element = document.getElementById(year);
+                       element.classList.add("year-active");
 
                    }
                }
 
            }
 
-           $(function() {
+           //    $(function() {
+           //        checkUrl();
+           //    })
+
+           window.onload = function() {
                checkUrl();
-           })
+           };
        </script>
        <script>
            var list = `<?php echo $response; ?>`;
            list = JSON.parse(list);
-           console.log(list);
            ///list count
            count = list.returned_count;
            let headline = null;
@@ -122,13 +129,20 @@
            let news_id = null;
            let container = "";
            let row = "";
-           var href = $('.news-readmore .elementor-button').attr('href');
+           //    var href = $('.news-readmore .elementor-button').attr('href');
+           let href = document.getElementById('news-readmore').children[0].children[0].children[0].getAttribute('href');
+           console.log(href);
+
+           //    $('#news-listing').css('display', 'none');
+           //    $('#no_record').css('display', 'none');
+           document.getElementById('news-listing').style.display = "none";
+           //    document.getElementById('no_record').style.display = "none";
 
 
-           $('#news-listing').css('display', 'none');
-           $('#no_record').css('display', 'none');
            let year = `<?php echo $year ?>`;
-           $('#' + year).addClass('active');
+           var element = document.getElementById(year);
+           element.classList.add("active");
+           //    $('#' + year).addClass('active');
 
            ///loop for each item
            if (count > 0) {
@@ -136,24 +150,38 @@
 
                    news_id = list.release[i]['id'];
                    headline = list.release[i]['headline'];
-                   releaseDate = date_format(list.release[i]['releaseDate']);
-                   $('#news-listing div:first .news-date div').children().text(releaseDate)
-                   $('#news-listing div:first .news-headline div').children().text(headline)
+                   //    releaseDate = date_format(list.release[i]['releaseDate']);
+                   let date = list.release[i]['releaseDate'];
+                   let date_arr = date.split(" ");
+                   releaseDate = date_arr[2] + " " + date_arr[1] + " " + date_arr[3];
 
 
-
-                   //	$('#news-listing div:first .news-readmore div').children().text(news_id)
-                   $('.news-readmore .elementor-button').attr('href', href + news_id)
-                   row = $('#news-listing').html();
-
+                   ///js
+                   var section = document.getElementById('news-listing').innerHTML; 
+                   document.getElementById('news-date').children[0].children[0].textContent = releaseDate;
+                   document.getElementById('news-headline').children[0].children[0].textContent = headline;
+                   document.getElementById('news-readmore').children[0].children[0].children[0].setAttribute('href', href + news_id);
+                  
+                   row = document.getElementById('news-listing').innerHTML;
                    container = container + row;
+
+
+
+
+                   ///Jquery
+                   //    $('#news-listing div:first .news-date div').children().text(releaseDate)
+                   //    $('#news-listing div:first .news-headline div').children().text(headline)
+                   //    $('.news-readmore .elementor-button').attr('href', href + news_id)
+                   //    row = $('#news-listing').html();
+                   //    container = container + row;
                }
-               console.log('<!------------Container-------------->');
-               console.log(container);
-               $('#news-listing').css('display', 'block');
+
+               //    $('#news-listing').css('display', 'block');
+               document.getElementById('news-listing').style.display = "block";
                document.getElementById('news-listing').innerHTML = container;
            } else {
-               $('#no_record').css('display', 'block');
+               //    $('#no_record').css('display', 'block');
+               document.getElementById('no_record').style.display = "block";
            }
            // console.log(row);
        </script>
@@ -461,8 +489,9 @@
 
         ///Get Opportunities
         $curl = curl_init();
+        $date = date('Y-m-d', strtotime('-1 day'));
         curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://service3.ultipro.ca/talent/recruiting/v2/ARC5000ARRS/api/opportunities',
+            CURLOPT_URL => 'https://service3.ultipro.ca/talent/recruiting/v2/ARC5000ARRS/api/opportunities?updated_after=' . $date,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -526,10 +555,10 @@
 
                    var section = document.getElementById('jobs-listing').innerHTML;
                    document.getElementById('jobs-title').children[0].children[0].children[0].textContent = title;
-                   document.getElementById('jobs-title').children[0].children[0].children[0].setAttribute('href',job_detail_link);
-                   document.getElementById('jobs-title').children[0].children[0].children[0].setAttribute('target','_blank');
+                   document.getElementById('jobs-title').children[0].children[0].children[0].setAttribute('href', job_detail_link);
+                   document.getElementById('jobs-title').children[0].children[0].children[0].setAttribute('target', '_blank');
                    document.getElementById('jobs-description').children[0].children[0].textContent = description;
- 
+
                    row = document.getElementById('jobs-listing').innerHTML;
                    container = container + row;
                    // console.log('<!------------Row-------------->');
